@@ -1,25 +1,20 @@
 import { Component } from 'react';
 import { Form } from './Form/Form';
 import { ContactsList } from './ContactsList/ContactsList';
+import { Filter } from './Filter/Filter';
 
 export class App extends Component {
   state = {
-    contacts: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
-    name: '',
-    number: '',
+    contacts: [],
+    filter: '',
   };
 
   hendleSubmit = newContact => {
     const isExist = this.state.contacts.find(
-      ({ number }) => number === newContact.number
+      ({ name }) => name.toLowerCase() === newContact.name.toLowerCase()
     );
-    if(isExist){
-      alert('contact already exists')
+    if (isExist) {
+      alert('contact already exists');
       return;
     }
     this.setState(prevState => ({
@@ -33,15 +28,33 @@ export class App extends Component {
     }));
   };
 
+  hendleFilterdContacts = (event) => {
+    const {name, value} = event.target
+   this.setState({[name]: value})
+  }
+
+  getFilteredContacts = () => {
+    const {contacts, filter} = this.state
+    const normalizeFilter = filter.toLowerCase()
+    return contacts.filter(({name})=>name.toLowerCase().includes(normalizeFilter))
+  }
+
   render() {
-    const {contacts} = this.state;
+    const FilteredContact = this.getFilteredContacts()
     return (
-      <>
-        <Form onSubmit={this.hendleSubmit} />
-        <h3>Contacts</h3>
-        <ContactsList contacts = {contacts} deleteContacts = {this.hendleDelitContact}/>
-     
-      </>
+    
+        <div>
+          <h1>Phonebook</h1>
+          <Form onSubmit={this.hendleSubmit} />
+
+          <h2>Filter Contacts</h2>
+          <Filter filterContact={this.hendleFilterdContacts} />
+          <ContactsList
+            contacts={FilteredContact}
+            deleteContacts={this.hendleDelitContact}
+          />
+        </div>
+      
     );
   }
 }

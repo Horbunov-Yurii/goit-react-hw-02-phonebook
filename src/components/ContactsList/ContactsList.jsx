@@ -1,6 +1,6 @@
 
 
-export const ContactsList = (contacts, deleteContacts) => {
+export const ContactsList = ({contacts, deleteContacts}) => {
   return (
    
          <ul>
